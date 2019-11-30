@@ -5,7 +5,7 @@ var Calc = function() {
     var self = this;
 
     this.on('stop', function() {
-        console.log('"Stop" event has reached to clac');
+        console.log('"Stop" event has reached to calc');
     });
 };
 
