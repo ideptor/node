@@ -11,9 +11,12 @@ let server = http.createServer((req, res) => {
         res.write(data);
         res.end();
     });*/
-    let infile = fs.createReadStream(filename, {flags:'r'});
 
+    // pipe로 연결시킴 - 위와 동일한 기능을 하는 코드임.
+    // 단, 헤더 설정을 할 수 없으므로, 필요할때만 활용.
+    let infile = fs.createReadStream(filename, {flags:'r'});
     infile.pipe(res);
+
 });
 
 let port = 3000;
