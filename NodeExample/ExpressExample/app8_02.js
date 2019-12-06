@@ -23,7 +23,7 @@ TypeError: Cannot read property 'id' of undefined
     at C:\gitworkplace\node\NodeExample\ExpressExample\node_modules\express\lib\router\index.js:284:7
 */
 
-app.post('/process/login', process_login);
+app.post('/process/login/:name', process_login);
 
 function process_login(req, res) {
     console.log("treat /process/login");
@@ -31,18 +31,16 @@ function process_login(req, res) {
     //let paramId = req.param("id");          // deprecated
     let paramId = req.body.id;
     let paramPassword = req.body.password;
+    var paramName = req.params.name;
 
     res.writeHead('200', {'Content-type':'text/html;charset=utf-8'});
     res.write('<h1> Express response </h1>');
+    res.write('<div><p>name : '+paramName+'</p></div>');
     res.write('<div><p>id : '+paramId+'</p></div>');
     res.write('<div><p>password : '+paramPassword+' </p></div>');
-    res.write('<br><br><a href="/login2.html">Back to Login page</a>');
+    res.write('<br><br><a href="/login3.html">Back to Login page</a>');
     res.end();
 }
-
-app.all('*', (req,res)=> {
-    res.send(404, '<h1> Error - Cannot find page.</h1>');
-})
 
 const port = 3000;
 http.createServer(app).listen(port, ()=>{

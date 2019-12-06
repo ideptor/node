@@ -2,10 +2,21 @@ let express = require('express');
 let http = require('http');
 let path = require('path');
 let bodyParser = require('body-parser');   // npm install body-parser --save
+var expressErrorHandler = require('express-error-handler');
+var cookieParser = require('cookie-parser');
 
 let app = express();
 
+var errorHandler = expressErrorHandler({
+    static: {
+        '404': './public/404.html'
+    }
+});
+
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+//app.use(expressErrorHandler.httpError(404));
+//app.use(errorHandler);
 app.use(bodyParser.urlencoded({expected:true}));
 /*
 위의 코드가 없으면 아래와 같은 에러 발생
@@ -40,9 +51,23 @@ function process_login(req, res) {
     res.end();
 }
 
-app.all('*', (req,res)=> {
-    res.send(404, '<h1> Error - Cannot find page.</h1>');
-})
+app.get('/process/showCookie', (req, res)=> {
+    console.log('/process/showKookie called');
+
+    res.send(req.cookies);
+});
+
+app.get('/process/setUserCookie', (req, res)=> {
+    console.log('/process/setUserCookie called');
+
+    res.cookie('user', {
+        id: 'mike',
+        name: 'Girl\'s age',
+        authorized: true
+    });
+
+    res.redirect('/process/showCookie');
+});
 
 const port = 3000;
 http.createServer(app).listen(port, ()=>{
@@ -50,8 +75,7 @@ http.createServer(app).listen(port, ()=>{
 });
 
 /*
-http://localhost:3000/login2.html 접속해서
-id, pwd 입력 후 submit 눌렀을때.
+http://localhost:3000/process/setUserCookie
 
 
 <h1> Express response </h1><div><p>id : idid</p></div><div><p>password : papa </p></div><br><br><a href="/login2.html">Back to Login page</a>

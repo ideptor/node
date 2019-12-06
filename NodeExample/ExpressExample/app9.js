@@ -2,10 +2,19 @@ let express = require('express');
 let http = require('http');
 let path = require('path');
 let bodyParser = require('body-parser');   // npm install body-parser --save
+var expressErrorHandler = require('express-error-handler');
 
 let app = express();
 
+var errorHandler = expressErrorHandler({
+    static: {
+        '404': './public/404.html'
+    }
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(expressErrorHandler.httpError(404));
+app.use(errorHandler);
 app.use(bodyParser.urlencoded({expected:true}));
 /*
 위의 코드가 없으면 아래와 같은 에러 발생
@@ -40,9 +49,6 @@ function process_login(req, res) {
     res.end();
 }
 
-app.all('*', (req,res)=> {
-    res.send(404, '<h1> Error - Cannot find page.</h1>');
-})
 
 const port = 3000;
 http.createServer(app).listen(port, ()=>{
