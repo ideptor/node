@@ -1,0 +1,19 @@
+# socket
+    - joinResult
+        + room: room
+    - message
+        + room: (optional)
+        + text:
+    - nameAttempt
+        + name:
+    - nameResult
+        + success: // true, false
+        + name: 
+    - join
+        + newRoom: 
+    - rooms
+        + io.socket.manager.rooms
+    - disconnect
+    - connect
+    
+    

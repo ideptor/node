@@ -1,6 +1,6 @@
 var http = require('http');
 var fs = require('fs');
-var path = require('fs');
+var path = require('path');
 var mime = require('mime');
 var cache = {};
 
@@ -13,7 +13,7 @@ function send404(response) {
 function sendFile(response, filePath, fileContents) {
     response.writeHead(
         200,
-        {'Content-Type':mime.lookup(path.basename(filePath))}
+        {'Content-Type': mime.getType(path.basename(filePath))}
     )
     response.end(fileContents);
 }
@@ -31,7 +31,7 @@ function serveStatic(response, cache, absPath) {
                     } 
                     else {
                         cache[absPath] = data;
-                        sendFile(resonse, absPath, data);
+                        sendFile(response, absPath, data);
                     }
                 });
             }
@@ -56,3 +56,6 @@ var server = http.createServer((request, response)=> {
 server.listen(3000, () => {
     console.log("Server is listening on port 3000");
 });
+
+var chatServer = require('./lib/chat_server');
+chatServer.listen(server);
