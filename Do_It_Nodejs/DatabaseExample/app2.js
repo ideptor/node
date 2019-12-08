@@ -23,7 +23,6 @@ function connectDB() {
         database = db.db('shopping');
         
     });
-    });
 }
 
 
@@ -48,6 +47,25 @@ var authUser = (database, id, password, callback) => {
         }
     });
 }
+
+var addUser = (database, id, password, name, callback) => {
+    console.log("addUser called.");
+
+    var users = database.collection('users');
+    users.insert([{
+        "id": id,
+        "password": password,
+        "name": name,
+    }], (err, result)=>{
+        if(err) {
+            callback(err, null);
+            return;
+        }
+
+        console.log("User info added.");
+        callback(null, result);
+    });
+};
 // server variable setting & public folder for static
 
 app.set('port', process.env.PORT || 3000);
@@ -110,6 +128,36 @@ app.post('/process/login', (req, res) => {
     }
 });
 
+app.post('/process/adduser', (req, res)=>{
+    console.log('/process/adduser called');
+
+    var paramId = req.body.id;
+    var paramPassword = req.body.password;
+    var paramName = req.body.name;
+
+    if(database) {
+        addUser(database, paramId, paramPassword, paramName, (err, result)=>{
+            if(err) { throw err;}
+
+            if(result) {
+                console.dir(result);
+
+                res.writeHead('200', {'Content-Type':'text/html;charset=utf8'});
+                res.write('<h2>Add user success</h2>');
+                res.end();
+            } else {
+                res.writeHead('200', {'Content-type':'text/html;charset=utf8'});
+                res.write('<h2>Add user failed</h2>');
+                res.end();
+            }
+        });
+    } else {
+        res.writeHead('200', {'Content-Type':'text/html;charset=utf8'});
+        res.write('<h2>Fail to connect database</h2>');
+        res.end();
+    }
+});
+
 app.use(expressErrorHandler.httpError(404));
 app.use(errorHandler);
 
@@ -119,6 +167,36 @@ http.createServer(app).listen(app.get('port'), () => {
     connectDB();
 });
 
+/*
+PS C:\gitworkplace\node\Do_It_Nodejs\DatabaseExample> node .\app2.js
+Server is started at port:3000
+(node:7648) DeprecationWarning: current Server Discovery and Monitoring engine is deprecated, and will be removed in a future version. To use the new Server Discover and Monitoring engine, pass option { useUnifiedTopology: true } to the MongoClient constructor.
+Database connection complete. : mongodb://localhost:27017/shopping
+/process/adduser called
+addUser called.
+(node:7648) DeprecationWarning: collection.insert is deprecated. Use insertOne, insertMany or bulkWrite instead.
+
+User info added.
+{
+  result: { ok: 1, n: 1 },
+  ops: [ { id: 't1', password: '123', name: 'david', _id: [ObjectID] } ],
+  insertedCount: 1,
+  insertedIds: {
+    '0': ObjectID { _bsontype: 'ObjectID', id: [Buffer [Uint8Array]] }
+  }
+}
+/process/login called
+authUser called.
+Success to find user with id:[t1], pwd:[123]
+[
+  {
+    _id: ObjectID { _bsontype: 'ObjectID', id: [Buffer [Uint8Array]] },
+    id: 't1',
+    password: '123',
+    name: 'david'
+  }
+]
+*/
 /*
 
 mongodb:
@@ -136,7 +214,7 @@ MongoDB Enterprise > db.users.find().pretty()
 }
 ```
 
-localhost:3000/public/login.html
+localhost:3000/public/adduser.html
 */
 
 //console.dir(database);

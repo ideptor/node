@@ -33,15 +33,29 @@ MongoDB Enterprise >
 
 ## 데이터 베이스에 데이터 추가
 
+추가하기
 ```
 MongoDB Enterprise > db.users.insert({"name":"girl's age", "age":20})
 WriteResult({ "nInserted" : 1 })
+```
+내용보기
+```
 MongoDB Enterprise > db.users.find().pretty()
 {
         "_id" : ObjectId("5debb81fd5fc28048f95cc71"),
         "name" : "girl's age",
         "age" : 20
 }
-MongoDB Enterprise >
 ```
+
+## 데이터 지우기
+
+```
+MongoDB Enterprise > db.users.remove({"name":/girl/})
+WriteResult({ "nRemoved" : 1 })
+MongoDB Enterprise > db.users.find().pretty()
+MongoDB Enterprise >   
+```
+
+## 실헝데이터 입력하기
 
