@@ -13,4 +13,13 @@ var user = {
     group: {id:'group01', name:'friend'}
 };
 
+
+function user = {
+    getUser: function() {
+        return {id:'test01', name: 'david'};
+    },
+    group: {id:'group01', name:'friend'}
+};
+
+
 module.exports = user;

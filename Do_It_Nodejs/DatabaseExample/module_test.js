@@ -6,3 +6,5 @@ function showUser() {
 }
 
 console.log('user info: %s', showUser());
+
+var user = new user1();
