@@ -6,16 +6,19 @@ var cookieParser = require('cookie-parser');
 var expressSession = require('express-session');
 var expressErrorHandler = require('express-error-handler');
 var mongoose = require('mongoose');
-var user = require('./routes/user');
 
-const databaseUrl = 'mongodb://localhost:27017/shopping';
+var user = require('./routes/user');
+var config = require('./config');
+
 
 var app = express();
 
+var database;
 
 
 function connectDB() {
 
+    var databaseUrl = config.db_url;
     mongoose.connect(databaseUrl);
     database = mongoose.connection;
 
