@@ -33,18 +33,3 @@ function connect(app, config) {
 }
 
 module.exports = database;
-
-function connectDB() {
-
-    var databaseUrl = config.db_url;
-    mongoose.connect(databaseUrl);
-    database = mongoose.connection;
-
-    database.on('error', console.error.bind(console, 'mongoose connection error'));
-    database.on('open', () => {
-        console.log('Database connection established.');
-        createUserSchema();
-    });
-
-    database.on('disconnected', connectDB);
-}
