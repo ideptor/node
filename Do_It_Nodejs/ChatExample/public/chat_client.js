@@ -1,51 +1,71 @@
-var host;
-var port;
 var socket;
 
 $(function() {          // when document loading
     $("#connectionButton").bind('click', function(event) {
         println('connectionButton is clicked.');
-        host = $("#hostInput").val();
-        port = $("#portInput").val();
+        var host = $("#hostInput").val();
+        var port = $("#portInput").val();
 
-        connectToServer();
+        connectToServer(host, port);
     });
 
     $("#sendButton").bind('click', function(event) {
-        var sender = $('#senderInput').val();
-        var recepient = $('#recepientInput').val();
-        var data = $('#dataInput').val();
 
-        var output = {sender:sender, recepient:recepient, command:'chat', type:'text', data:data};
-        console.log('Data sent to server : '+JSON.stringify(output));
-
-        if(socket == undefined) {
-            alert('No connection to server. Connect to server.');
-            return;
-        }
-
-        socket.emit('message', output);
+        send('message', {
+            sender:$('#senderInput').val(), 
+            recepient: $('#recepientInput').val(), 
+            command:'chat', 
+            type:'text', 
+            data:$('#dataInput').val()});
     });
 
     $("#loginButton").bind('click', function(event) {
-        var id = $('#idInput').val();
-        var password = $('#passwordInput').val();
-        var alias = $('#aliasInput').val();
-        var today = $('#todayInput').val();
 
-        var output = {id:id, password:password, alias:alias, today:today};
-        console.log('Data sent to server : '+JSON.stringify(output));
+        send('login', {
+            id:$('#idInput').val(),
+            password:$('#passwordInput').val(), 
+            alias:$('#aliasInput').val(), 
+            today:$('#todayInput').val()});
+    });
 
-        if(socket == undefined) {
-            alert('No connection to server. Connect to server.');
-            return;
-        }
+    $("#createRoomButton").bind('click', function(event) {
 
-        socket.emit('login', output);
+        send('room', { 
+            command: "create",
+            roomId: $('#roomIdInput').val(),
+            roomName:$('#roomNameInput').val(), 
+            roomOwner: $('#idInput').val()});
+    });
+
+    $("#updateRoomButton").bind('click', function(event) {
+
+        send('room', { 
+            command: "update",
+            roomId : $('#roomIdInput').val(),
+            roomName:$('#roomNameInput').val(), 
+            roomOwner: $('#idInput').val()});
+    });
+
+    $("#deleteRoomButton").bind('click', function(event) {
+
+        send('room', { 
+            command: "delete",
+            roomId : $('#roomIdInput').val()});
     });
 });
 
-function connectToServer() {
+function send(event, output) {
+    console.log('Data sent to server : '+JSON.stringify(output));
+
+    if(socket == undefined) {
+        alert('No connection to server. Connect to server.');
+        return;
+    }
+
+    socket.emit(event, output);
+}
+
+function connectToServer(host, port) {
     var options = { "froceNew": true };
     var url = 'http://' + host+":"+port;
     socket = io.connect(url, options);
@@ -65,7 +85,23 @@ function connectToServer() {
     socket.on('response', function(response) {
         console.log(JSON.stringify(response));
         println('Received: '+response.command+', '+response.code+', '+response.message);
-    })
+    });
+
+    socket.on('room', function(data) {
+        console.log(JSON.stringify(data));
+
+        println('<p>Room event : ' + data.command + '</p>');
+        if(data.command == 'list') {
+            println('<p>Room list is received.</p>');
+            var roomCount = data.rooms.length;
+            $("#roomList").html('<p>Room List (' + roomCount + ')</p>');
+            for(var i=0; i<roomCount; i++) {
+                room = data.rooms[i];
+                $("#roomList").append('<p>Room#'+i+': '+room.id+', '
+                    +room.name+', '+room.owner+'</p>');
+            }
+        }
+    });
 
     socket.on('disconnect', function(){
         println("WebSocket is disconnected.");
