@@ -26,6 +26,23 @@ $(function() {          // when document loading
 
         socket.emit('message', output);
     });
+
+    $("#loginButton").bind('click', function(event) {
+        var id = $('#idInput').val();
+        var password = $('#passwordInput').val();
+        var alias = $('#aliasInput').val();
+        var today = $('#todayInput').val();
+
+        var output = {id:id, password:password, alias:alias, today:today};
+        console.log('Data sent to server : '+JSON.stringify(output));
+
+        if(socket == undefined) {
+            alert('No connection to server. Connect to server.');
+            return;
+        }
+
+        socket.emit('login', output);
+    });
 });
 
 function connectToServer() {
@@ -44,6 +61,11 @@ function connectToServer() {
         println('<p>Received: '+message.sender + ', '+message.recepient+', '
             +message.command+', '+message.type+', '+message.data+'</p>');
     });
+
+    socket.on('response', function(response) {
+        console.log(JSON.stringify(response));
+        println('Received: '+response.command+', '+response.code+', '+response.message);
+    })
 
     socket.on('disconnect', function(){
         println("WebSocket is disconnected.");
