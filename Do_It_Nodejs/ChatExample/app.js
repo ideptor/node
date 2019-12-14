@@ -25,4 +25,14 @@ io.sockets.on('connection', function(socket) {
 
     socket.remoteAddress = socket.request.connection._peername.address;
     socket.reportPort = socket.request.connection._peername.port;
+
+    socket.on('message', function(message) {
+        console.log('[message] event is received.');
+        console.dir(message);
+
+        if(message.recepient == 'ALL') {
+            console.dir('Sending message to all clients including myself.');
+            io.sockets.emit('message', message);
+        }
+    });
 });

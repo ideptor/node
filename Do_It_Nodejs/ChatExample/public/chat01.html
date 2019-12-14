@@ -2,44 +2,10 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Chat Client 01</title>
+        <title>Chat Client</title>
         <script src="./jquery-2.1.4.min.js"></script>
         <script src="./socket.io.js"></script>
-        <script>
-            var host;
-            var port;
-            var socket;
-
-            $(function() {          // when document loading
-                $("#connectionButton").bind('click', function(event) {
-                    println('connectionButton is clicked.');
-                    host = $("#hostInput").val();
-                    port = $("#portInput").val();
-
-                    connectToServer();
-                });
-            });
-
-            function connectToServer() {
-                var options = { "froceNew": true };
-                var url = 'http://' + host+":"+port;
-                socket = io.connect(url, options);
-                
-                socket.on('connect', function() {
-                    println("WebSocket is connected. : " + url);
-                });
-
-                socket.on('disconnect', function(){
-                    println("WebSocket is disconnected.");
-                });
-
-            }
-
-            function println(data) {
-                console.log(data);
-                $("#result").append("<p>"+data+"</p>");
-            }
-        </script>
+        <script src="./chat_client.js"></script>
 
     </head>
     <body>
@@ -49,6 +15,23 @@
             <input type="text" id="hostInput" value="localhost">
             <input type="text" id="portInput" value="3000">
             <input type="button" id = "connectionButton" value="Connect">
+        </div>
+        
+        <div>
+            <div>
+                <span>Sender ID : </span>
+                <input type="text" id="senderInput" value="test01">
+            </div>
+            <div>
+                <span>Recepient ID : </span>
+                <input type="text" id="recepientInput" value="ALL">
+            </div>
+            <div>
+                <span>Message : </span>
+                <input type="text" id="dataInput" value="Hello!">
+            </div>
+            <br>
+            <input type="button" id = "sendButton" value="Send">
         </div>
 
         <hr/>
