@@ -73,6 +73,22 @@
                  padding-top : 0.6em;
                  text-align : right;
              }
+
+             @media screen and (min-width:320px) and (max-width:786px) {
+                 #cardbox {
+                     width:90%;
+                 }
+
+                 label[id=contentsText] {
+                     display:none;
+                 }
+             }
+
+             @media screen and (min-width:786px) and (max-width:979px) {
+                 #cardbox {
+                     width: 80%;
+                 }
+             }
         </style>
     </head>
     <body>
@@ -89,41 +105,42 @@
                         </div>
                     </div>
                 </div>
-                <form id="form1" method="post" action="/process/login">
-                    <table>
-                        <tr class="row">
-                            <td class = "col1"><label id="contentsText">Id</label></td>
-                            <td class = "col2" colspan="2">
-                                <div class="ui input">
-                                    <input type="text" name="id">
-                                </div>
-                            </td>
-                            <td></td>
-                        </tr>
-                        <tr class="row">
-                            <td class = "col1"><label id="contentsText">Password</label></td>
-                            <td class = "col2" colspan="2">
-                                <div class="ui input">
-                                    <input type="password" name="password">
-                                </div>
-                            </td>
-                            <td></td>
-                        </tr>
-                        <tr vlaign = "baseline">
-                            <td></td>
-                            <td>
-                                <div class = "ui toggle checkbox">
-                                    <input type = "checkbox" name = "saveOption">
-                                    <label>Save id</label>
-                                </div>
-                            </td>
-                            <td id = "buttonContainer" align = "right">
-                                <input id = "submitButton" class = "ui primary button" type="submit" value="Login" name="">
-                            </td>
-                        </tr>
-                    </table>
-                </form>
             </div>
+
+            <form id="form1" method="post" action="/process/login">
+                <table>
+                    <tr class="row">
+                        <td class = "col1"><label id="contentsText">Id</label></td>
+                        <td class = "col2" colspan="2">
+                            <div class="ui input">
+                                <input type="text" name="id">
+                            </div>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr class="row">
+                        <td class = "col1"><label id="contentsText">Password</label></td>
+                        <td class = "col2" colspan="2">
+                            <div class="ui input">
+                                <input type="password" name="password">
+                            </div>
+                        </td>
+                        <td></td>
+                    </tr>
+                    <tr vlaign = "baseline">
+                        <td></td>
+                        <td>
+                            <div class = "ui toggle checkbox">
+                                <input type = "checkbox" name = "saveOption">
+                                <label>Save id</label>
+                            </div>
+                        </td>
+                        <td id = "buttonContainer" align = "right">
+                            <input id = "submitButton" class = "ui primary button" type="submit" value="Login" name="">
+                        </td>
+                    </tr>
+                </table>
+            </form>
         </div>
     </body>
 </html>
