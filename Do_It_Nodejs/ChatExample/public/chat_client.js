@@ -10,11 +10,16 @@ $(function() {          // when document loading
     });
 
     $("#sendButton").bind('click', function(event) {
-
+        
+        var chattype = $("#chattype option:selected").val();
+        var recepient = $('#recepientInput').val(); 
+        if(chattype === 'groupchat') {
+            recepient = $('#roomIdInput').val();
+        }
         send('message', {
             sender:$('#senderInput').val(), 
-            recepient: $('#recepientInput').val(), 
-            command:'chat', 
+            recepient: recepient, 
+            command: chattype, 
             type:'text', 
             data:$('#dataInput').val()});
     });
@@ -52,6 +57,21 @@ $(function() {          // when document loading
             command: "delete",
             roomId : $('#roomIdInput').val()});
     });
+
+    $("#joinRoomButton").bind('click', function(event) {
+        send('room', {
+            command : "join",
+            roomId : $("#roomIdInput").val()
+        });
+    });
+
+    $("#leaveRoomButton").bind('click', function(event) {
+        send('room', {
+            command : "leave", 
+            roomId : $("#roomIdInput").val()
+        });
+    });
+
 });
 
 function send(event, output) {

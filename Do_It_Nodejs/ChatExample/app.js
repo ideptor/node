@@ -66,6 +66,13 @@ function roomEventHandler(socket, message) {
         } else {
             console.log('Room is not created. '+message.roomName);
         }
+    } else if (message.command === 'join') {
+        socket.join(message.roomId);
+        sendResponse(socket, 'room', '200', 'You have joined the room.');
+
+    } else if (message.command === 'leave') {
+        socket.join(message.roomId);
+        sendResponse(socket, 'room', '200', 'You have leaved the room.');
     }
 
     var roomList = getRoomList();
@@ -139,16 +146,24 @@ function messageEventHandler(socket, message) {
     console.dir(message);
 
     if(message.recepient == 'ALL') {
-        console.log('Sending message to all clients including myself.');
+        console.log('Sending message to all clients including myself. message:'+message.data);
         io.sockets.emit('message', message);
     } else {
-        recepient_socket_id = login_ids[message.recepient];
-        if(recepient_socket_id) {
-            io.sockets.connected[recepient_socket_id].emit('message', message);
 
-            sendResponse(socket, 'message', '200', 'Message has been sent.');
-        } else {
-            sendResponse(socket, 'fail', '404', 'Cannot find id: '+message.recepient);
+        if(message.command == 'chat') {
+            console.log("1:1 chat to:"+message.recepient+", from:"+message.sender+", message:"+message.data);
+            recepient_socket_id = login_ids[message.recepient];
+            if(recepient_socket_id) {
+                io.sockets.connected[recepient_socket_id].emit('message', message);
+                sendResponse(socket, 'message', '200', 'Message has been sent.');
+            } else {
+                sendResponse(socket, 'fail', '404', 'Cannot find id: '+message.recepient);
+            }
+        } else if(message.command == 'groupchat') {
+            console.log("group chat from:"+message.sender+", message:"+message.data+", to:"+message.recepient);
+            //io.sockets.in(message.recepient).emit('message', message);
+            io.sockets.in('meeting01').emit('message', message);
+            sendResponse(socket, 'message',  '200', 'Message has been sent to the room:'+message.recepient);
         }
     }
 }
